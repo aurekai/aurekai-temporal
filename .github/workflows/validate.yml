@@ -6,11 +6,20 @@ on:
     branches: [ main ]
 
 jobs:
-  readme:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - name: Ensure scaffold files exist
         run: |
           test -f README.md
           test -f LICENSE
+          test -f .release-versions.env
+      - name: Validate release versions
+        run: bash tests/validate-schemas.sh
+      - name: Validate pipeline files
+        run: bash tests/validate-scripts.sh
